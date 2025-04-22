@@ -1,0 +1,14 @@
+Dockerfileを作成してください
+  - docker-compose.ymlを作成してください
+    - servicesはwebとしてください
+    - imageはnode:22を利用してください
+    - portはFRONTEND_PORTの環境変数を利用してください
+    - LANGとTimeZoneの環境変数を宣言してください
+    - terminalからアクセスできるようにttyとstdin_openを設定してください
+  - .envファイルを作成してください
+    - FRONTEND_PORTを宣言してください。23111の値を宣言してください
+    - gitignoreに追加してください
+  - Dockerfileを作成して下さい
+    - web用です
+    - apt updateとvim,yarnのinstallをしてください
+    - yarn devコマンドで起動してください

@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    environment:
+      - LANG=ja_JP.UTF-8
+      - TZ=Asia/Tokyo
+      - FRONTEND_PORT=${FRONTEND_PORT}
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/app
+      - /app/node_modules
