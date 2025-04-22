@@ -1,0 +1,7 @@
+`docker-compose up -d`コマンドで起動すると以下のエラーが発生しました。対応してください。
+
+```
+yarn run v1.22.22
+error Couldn't find a package.json file in "/app"
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+```
