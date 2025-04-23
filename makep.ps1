@@ -29,14 +29,23 @@ $timestamp = Get-Date -Format "yyyyMMddHHmm"
 function ConvertTo-SnakeCase {
   param([string]$str)
 
-  # スペースをアンダースコアに置換し、小文字に変換
+  # すでにスネークケースの場合は処理を簡略化
+  if ($str -match "^[a-z0-9_]+$") {
+    return $str
+  }
+
+  # スペースをアンダースコアに置換
   $snakeCase = $str -replace '\s+', '_'
+
   # キャメルケースやパスカルケースを処理 (大文字の前にアンダースコアを挿入)
-  $snakeCase = $snakeCase -replace '(?<=.)(?=[A-Z])', '_'
+  $snakeCase = $snakeCase -replace '(?<=[a-z0-9])(?=[A-Z])', '_'
+
   # すべて小文字に変換
   $snakeCase = $snakeCase.ToLower()
+
   # 連続するアンダースコアを1つに置換
   $snakeCase = $snakeCase -replace '_+', '_'
+
   # 先頭と末尾のアンダースコアを削除
   $snakeCase = $snakeCase.Trim('_')
 
