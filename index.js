@@ -14,6 +14,11 @@ app.get('/', (req, res) => {
   res.send('AI問診システムへようこそ！');
 });
 
+// 会話ページへのルーティング
+app.get('/conversation', (req, res) => {
+  res.sendFile(__dirname + '/public/conversation.html');
+});
+
 // サーバー起動
 app.listen(port, () => {
   console.log(`サーバーが起動しました: http://localhost:${port}`);

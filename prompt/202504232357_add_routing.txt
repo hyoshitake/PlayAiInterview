@@ -1,0 +1,1 @@
+`public/index.html`のmicButtonをクリックした後に遷移すると`Cannot GET /conversation`と表示されます。index.jsのexpressのroutingが追加されていないのではないでしょうか。/conversationに遷移したら、public/conversation.htmlが表示されるようにroutingを設定してください
