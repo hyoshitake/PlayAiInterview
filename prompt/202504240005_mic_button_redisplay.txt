@@ -1,0 +1,2 @@
+`public/index.html`の`micButton`がブラウザバックでindex.htmlに戻ってくると消えています。
+クリックした後にアニメーションでマイクアイコンを消した後に、/conversationに遷移する直前に再表示してください

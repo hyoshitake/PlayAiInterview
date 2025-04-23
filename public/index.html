@@ -119,9 +119,14 @@
       micButton.addEventListener('click', function() {
         micIcon.classList.add('click-animation');
 
-        // アニメーション終了後にページ遷移
+        // アニメーション終了後にマイクアイコンを再表示してからページ遷移
         setTimeout(function() {
-          window.location.href = '/conversation';
+          // アニメーションクラスを削除して再表示
+          micIcon.classList.remove('click-animation');
+          // 少し遅延を入れてからページ遷移
+          setTimeout(function() {
+            window.location.href = '/conversation';
+          }, 50);
         }, 500);
       });
     });
