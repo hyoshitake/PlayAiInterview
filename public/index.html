@@ -4,34 +4,127 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI問診システム</title>
+  <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
   <style>
     body {
       font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       line-height: 1.6;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f5f7fa;
     }
+
     .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      border-radius: 5px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
     }
+
     h1 {
       color: #333;
-      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .mic-container {
+      position: relative;
+      cursor: pointer;
+      margin: 20px 0;
+    }
+
+    .mic-icon {
+      font-size: 80px;
+      color: #3498db;
+      z-index: 2;
+      position: relative;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .mic-container:hover .mic-icon {
+      color: #2980b9;
+    }
+
+    .mic-container:active .mic-icon {
+      transform: scale(0.9);
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background-color: rgba(52, 152, 219, 0.2);
+      width: 100px;
+      height: 100px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 1;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .mic-container:hover .ripple {
+      animation: ripple 1.5s ease-out infinite;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(3);
+        opacity: 0;
+      }
+    }
+
+    .click-animation {
+      animation: clickDown 0.5s ease forwards;
+    }
+
+    @keyframes clickDown {
+      0% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(20px) scale(0.8);
+      }
+      100% {
+        transform: translateY(50px) scale(0.6);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>AI問診システム</h1>
-    <p>ようこそ、AI問診システムへ。このシステムはAIによる自動問診を提供します。</p>
-    <div id="app">
-      <!-- ここにアプリケーションのUIが表示されます -->
+    <div class="mic-container" id="micButton">
+      <i class="fas fa-microphone mic-icon"></i>
+      <div class="ripple"></div>
     </div>
+    <p>マイクをクリックして問診を開始</p>
   </div>
-  <script src="/js/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const micButton = document.getElementById('micButton');
+      const micIcon = micButton.querySelector('.mic-icon');
+
+      micButton.addEventListener('click', function() {
+        micIcon.classList.add('click-animation');
+
+        // アニメーション終了後にページ遷移
+        setTimeout(function() {
+          window.location.href = '/conversation';
+        }, 500);
+      });
+    });
+  </script>
 </body>
 </html>
