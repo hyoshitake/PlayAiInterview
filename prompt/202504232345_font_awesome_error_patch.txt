@@ -1,0 +1,5 @@
+以下のエラーが発生しているため、fontAwesomeのcssの読み込みが失敗しています。対処してください。
+```
+Refused to apply style from 'http://localhost:23111/node_modules/@fortawesome/fontawesome-free/css/all.min.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.
+```
+
