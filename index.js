@@ -3,6 +3,12 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = process.env.FRONTEND_PORT || 3000;
+const { OpenAI } = require('openai');
+
+// OpenAI APIクライアントの設定
+const openai = new OpenAI({
+  apiKey: process.env.OPEN_AI_API_KEY
+});
 
 // 静的ファイルの提供
 app.use(express.static('public'));
@@ -17,6 +23,35 @@ app.get('/', (req, res) => {
 // 会話ページへのルーティング
 app.get('/conversation', (req, res) => {
   res.sendFile(__dirname + '/public/conversation.html');
+});
+
+// OpenAI APIエンドポイント
+app.post('/api/openai', async (req, res) => {
+  try {
+    const { input } = req.body;
+
+    if (!input || input.trim() === '') {
+      return res.status(400).json({ error: '入力テキストが必要です' });
+    }
+
+    console.log('OpenAI APIリクエスト:', input);
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4.1",
+      messages: [
+        { role: "system", content: "あなたはAI問診システムです。患者の症状や状態について詳しく質問し、適切なアドバイスを提供してください。" },
+        { role: "user", content: input }
+      ],
+    });
+
+    const response = completion.choices[0].message.content;
+    console.log('OpenAI API応答:', response);
+
+    res.json({ response });
+  } catch (error) {
+    console.error('OpenAI APIエラー:', error);
+    res.status(500).json({ error: 'APIリクエスト中にエラーが発生しました', details: error.message });
+  }
 });
 
 // サーバー起動

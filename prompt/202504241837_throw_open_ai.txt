@@ -1,0 +1,7 @@
+- OpenAIとAPI連携できるようにします
+  - .envに`OPEN_AI_API_KEY`を新設してください
+    - 値は`openaikey`としてください
+  - `public\conversation.html` で `stopButton`をclickした後に、検出された文章(finalTranscript)をOpenAIのAPIに投げてください
+    - `Text generation and prompting`の`responses.create`APIを利用してください
+    - inputにfinalTranscriptをセットしてください
+    - modelはgpt-4.1を利用してください

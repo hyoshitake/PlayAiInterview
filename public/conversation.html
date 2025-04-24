@@ -48,6 +48,33 @@
       text-align: left;
     }
 
+    #aiResponse {
+      font-size: 18px;
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #f0f8ff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      min-height: 100px;
+      text-align: left;
+      border-left: 4px solid #3498db;
+      display: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(52, 152, 219, 0.3);
+      border-radius: 50%;
+      border-top-color: #3498db;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     #stopButton {
       display: inline-block;
       background-color: #f8f9fa;
@@ -76,6 +103,7 @@
   <div class="container">
     <h1>会話ページ</h1>
     <div id="speechResult"></div>
+    <div id="aiResponse"></div>
     <button id="stopButton">
       <i class="fas fa-phone-slash"></i>
     </button>
@@ -102,11 +130,12 @@
       recognition.continuous = true;  // 連続的に認識
 
       const speechResult = document.getElementById('speechResult');
+      const aiResponse = document.getElementById('aiResponse');
       const stopButton = document.getElementById('stopButton');
+      let finalTranscript = '';  // 確定した認識結果を保持
 
       // 結果取得時のイベント
       recognition.onresult = function(event) {
-        let finalTranscript = '';  // 確定した認識結果
         let interimTranscript = '';  // 暫定的な認識結果
 
         // 認識結果の処理
@@ -137,10 +166,44 @@
         console.log('音声認識が終了しました');
       };
 
+      // OpenAI APIにリクエストを送信する関数
+      async function sendToOpenAI(text) {
+        try {
+          aiResponse.style.display = 'block';
+          aiResponse.innerHTML = '<div class="loading"></div> AIが応答を生成中...';
+
+          const response = await fetch('/api/openai', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ input: text })
+          });
+
+          if (!response.ok) {
+            throw new Error('API応答エラー: ' + response.status);
+          }
+
+          const data = await response.json();
+          aiResponse.innerHTML = '<strong>AI応答:</strong><br>' + data.response;
+        } catch (error) {
+          console.error('OpenAI API エラー:', error);
+          aiResponse.innerHTML = 'エラーが発生しました: ' + error.message;
+        }
+      }
+
       // 停止ボタンのイベント
       stopButton.addEventListener('click', function() {
         recognition.stop();
         speechResult.innerHTML += '<p><strong>音声認識を終了しました</strong></p>';
+
+        // 認識した文章をOpenAI APIに送信
+        if (finalTranscript.trim() !== '') {
+          sendToOpenAI(finalTranscript);
+        } else {
+          aiResponse.style.display = 'block';
+          aiResponse.innerHTML = '認識されたテキストがありません。もう一度試してください。';
+        }
       });
 
       // 自動的に音声認識を開始
