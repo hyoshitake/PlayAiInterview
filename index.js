@@ -30,18 +30,15 @@ app.post('/api/openai', async (req, res) => {
   try {
     const { input } = req.body;
 
-    if (!input || input.trim() === '') {
-      return res.status(400).json({ error: '入力テキストが必要です' });
+    if (!input || !Array.isArray(input) || input.length === 0) {
+      return res.status(400).json({ error: '有効な入力メッセージが必要です' });
     }
 
     console.log('OpenAI APIリクエスト:', input);
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4.1",
-      messages: [
-        { role: "system", content: "あなたはAI問診システムです。患者の症状や状態について詳しく質問し、適切なアドバイスを提供してください。" },
-        { role: "user", content: input }
-      ],
+      messages: input
     });
 
     const response = completion.choices[0].message.content;
