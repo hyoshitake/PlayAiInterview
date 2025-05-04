@@ -1,0 +1,5 @@
+- 医師の発言は読み上げてください。
+  - `conversationMessages` の配列の最後のメッセージのroleが`assistant`の場合は読み上げて下さい
+  - 読み上げはWeb Speech Apiを利用してください。SpeechSynthesisUtteranceを利用してください
+  - 読み上げている途中で`micButton`がclickされたときは読み上げを中止してください
+  - 読み上げが完了したら自動で`micButton`のclickイベントを実行してください

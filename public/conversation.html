@@ -191,6 +191,8 @@
 
       let finalTranscript = '';  // 確定した認識結果を保持
       let conversationMessages = []; // 会話履歴を保持する配列
+      let speechSynthesis = window.speechSynthesis; // 音声合成オブジェクト
+      let currentUtterance = null; // 現在読み上げ中の発話オブジェクト
 
       // システムプロンプトを初期化
       const systemPrompt = {
@@ -267,6 +269,44 @@
         }
       }
 
+      // 医師の発言を音声で読み上げる関数
+      function speakDoctorResponse() {
+        // 会話履歴の最後のメッセージを取得
+        const lastMessage = conversationMessages[conversationMessages.length - 1];
+
+        // 最後のメッセージがアシスタント（医師）の場合、読み上げる
+        if (lastMessage && lastMessage.role === 'assistant') {
+          // 既に読み上げ中の場合はキャンセル
+          if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+          }
+
+          // 新しい発話オブジェクトを作成
+          currentUtterance = new SpeechSynthesisUtterance(lastMessage.content);
+          currentUtterance.lang = 'ja-JP';
+          currentUtterance.rate = 1.0;
+
+          // 読み上げ完了時のイベント
+          currentUtterance.onend = function() {
+            console.log('読み上げが完了しました');
+            // 読み上げ完了後、自動でマイクボタンをクリック
+            setTimeout(() => {
+              micButton.click();
+            }, 500);
+          };
+
+          // 読み上げ開始
+          speechSynthesis.speak(currentUtterance);
+        }
+      }
+
+      // 読み上げを停止する関数
+      function stopSpeaking() {
+        if (speechSynthesis.speaking) {
+          speechSynthesis.cancel();
+        }
+      }
+
       // OpenAI APIにリクエストを送信する関数
       async function sendToOpenAI(text = '') {
         try {
@@ -313,6 +353,9 @@
           finalTranscript = '';
           stopButton.style.display = 'none';
           micButton.style.display = 'inline-block';
+
+          // 医師の発言を読み上げる
+          speakDoctorResponse();
         } catch (error) {
           console.error('OpenAI API エラー:', error);
           speechResult.innerHTML = 'エラーが発生しました: ' + error.message;
@@ -322,6 +365,9 @@
 
       // マイクボタンのイベント
       micButton.addEventListener('click', function() {
+        // 読み上げ中なら停止
+        stopSpeaking();
+
         micButton.style.display = 'none';
         stopButton.style.display = 'inline-block';
         speechResult.innerHTML = '話しかけてください...';
