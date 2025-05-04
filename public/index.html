@@ -32,6 +32,26 @@
       margin-bottom: 50px;
     }
 
+    .interview-selector {
+      margin-bottom: 30px;
+      width: 250px;
+    }
+
+    .interview-selector select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .interview-selector select:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+
     .mic-container {
       position: relative;
       cursor: pointer;
@@ -104,6 +124,14 @@
 <body>
   <div class="container">
     <h1>AI問診システム</h1>
+    <div class="interview-selector">
+      <select id="interviewType">
+        <option value="T_001786000093">眼科問診</option>
+        <option value="T_001786000123">内科問診</option>
+        <option value="T_001786000129">小児科問診</option>
+        <option value="T_001786000141">婦人科問診</option>
+      </select>
+    </div>
     <div class="mic-container" id="micButton">
       <i class="fas fa-microphone mic-icon"></i>
       <div class="ripple"></div>
@@ -115,8 +143,17 @@
     document.addEventListener('DOMContentLoaded', function() {
       const micButton = document.getElementById('micButton');
       const micIcon = micButton.querySelector('.mic-icon');
+      const interviewType = document.getElementById('interviewType');
 
       micButton.addEventListener('click', function() {
+        // 選択された問診タイプを取得
+        const selectedValue = interviewType.value;
+        const selectedText = interviewType.options[interviewType.selectedIndex].text;
+
+        // セッションストレージに保存（ページ遷移後も利用可能）
+        sessionStorage.setItem('selectedInterviewValue', selectedValue);
+        sessionStorage.setItem('selectedInterviewLabel', selectedText);
+
         micIcon.classList.add('click-animation');
 
         // アニメーション終了後にマイクアイコンを再表示してからページ遷移

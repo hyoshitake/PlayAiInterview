@@ -1,0 +1,11 @@
+- `index.html` の `mic-container` の上に問診票を選択できるようにしてください
+  - セレクトボックスを追加してください。
+  - 選択肢は以下の通りです
+    1. label: 眼科問診, value: T_001786000093
+    2. label: 内科問診, value: T_001786000123
+    3. label: 小児科問診, value: T_001786000129
+    4. label: 婦人科問診, value: T_001786000141
+  - 選択した内容は`public\conversation.html`に連携してください
+  - vonversation.html の `systemPrompt`の「[眼科問診](https://hiroba.symview.me/hiroba?templateid=T_001786000093)」を選択肢に応じて書き換えてください
+    - labelは `眼科問診` を上書きしてください
+    - valueは `T_001786000093` を上書きしてください

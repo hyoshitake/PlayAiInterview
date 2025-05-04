@@ -175,6 +175,12 @@
         return;
       }
 
+      // セッションストレージから選択された問診タイプを取得
+      const selectedInterviewValue = sessionStorage.getItem('selectedInterviewValue') || 'T_001786000093'; // デフォルト値
+      const selectedInterviewLabel = sessionStorage.getItem('selectedInterviewLabel') || '眼科問診'; // デフォルト値
+
+      console.log('選択された問診タイプ:', selectedInterviewLabel, selectedInterviewValue);
+
       // 音声認識オブジェクトの作成
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
@@ -194,11 +200,11 @@
       let speechSynthesis = window.speechSynthesis; // 音声合成オブジェクト
       let currentUtterance = null; // 現在読み上げ中の発話オブジェクト
 
-      // システムプロンプトを初期化
+      // システムプロンプトを初期化（選択された問診タイプに基づいて）
       const systemPrompt = {
         role: "system",
         content: `あなたは医師です。userの会話に対して問診(medical interview)を進めてください。必要なことを聞けたら「問診終了です。ありがとうございました」と発言して下さい
-- 質問内容は眼科問診(https://hiroba.symview.me/hiroba?templateid=T_001786000093)に則って下さい
+- 質問内容は[${selectedInterviewLabel}](https://hiroba.symview.me/hiroba?templateid=${selectedInterviewValue})に則って下さい
 - 病名を特定する必要はありません。
 - 最初は医師から会話を始めてください`
       };
