@@ -1,0 +1,11 @@
+`public\conversation.html`の以下のorderの指定は不要です。classごと削除してください
+```
+.user-message .avatar {
+  order: 2;
+}
+
+.ai-message .avatar,
+.system-message .avatar {
+  order: 1;
+}
+```
