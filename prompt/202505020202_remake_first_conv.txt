@@ -1,0 +1,16 @@
+- `/conversation`に遷移しした後の処理を変更してください
+  - 遷移直後にsendToOpenAIを実行し、OpenAI APIのレスポンスを画面に表示してください
+  - OpenAi APIのレスポンスを画面に表示した後に、マイクボタンを表示してください
+    - stopButtonと同じ位置に表示してください
+    - 発言を待つタイミングはマイクボタンを表示します
+    - マイクボタンは青色にしてください
+  - マイクボタンを押した後に発言を待ってください
+    - 発言を待つとは`/conversation.html`のDOMContentLoadedの処理と同じような内容です
+    - 発言中はstopButtonと同じ位置にマイク終了ボタンを表示してください
+    - いまの`fa-phone-slash`のボタンと同じものにしてください
+  - マイク終了ボタンを押した後に検出された文章(finalTranscript)をOpenAIのAPIに投げてください
+    - `Text generation and prompting`の`responses.create`APIを利用してください
+    - body.inputを配列にし、今までの発言及びrole: systemの内容を時系列で配列にセットして下さい
+    - レスポンスを画面に表示してください
+    - OpenAi APIのレスポンスを画面に表示した後に、マイクボタンを表示してください
+
