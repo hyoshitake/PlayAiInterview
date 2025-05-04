@@ -75,7 +75,7 @@ New-Item -Path $filePath -ItemType File | Out-Null
 
 # 結果を出力
 Write-Host "プロンプトファイルを作成しました: $fileName" -ForegroundColor Green
-Write-Host "git commit $fileName を実行" -ForegroundColor Cyan
+Write-Host "git commit -m ""$fileName"" を実行" -ForegroundColor Cyan
 
 # ファイルパスを返す (エディタで開くなどの操作に使用可能)
 return $filePath
