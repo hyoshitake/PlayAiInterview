@@ -1,0 +1,2 @@
+- ロボットのアイコン(`fa-robot`)と医師のアイコン(`fa-user-md`)は吹き出し(`message-content`)の左にしてください
+- `system-message`は改行も反映して表示してください

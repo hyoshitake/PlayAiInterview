@@ -26,17 +26,6 @@
       margin-bottom: 30px;
     }
 
-    .back-link {
-      display: inline-block;
-      margin-top: 20px;
-      color: #3498db;
-      text-decoration: none;
-    }
-
-    .back-link:hover {
-      text-decoration: underline;
-    }
-
     #speechResult {
       font-size: 18px;
       margin: 20px 0;
@@ -46,18 +35,6 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       min-height: 100px;
       text-align: left;
-    }
-
-    #aiResponse {
-      font-size: 18px;
-      margin: 20px 0;
-      padding: 15px;
-      background-color: #f0f8ff;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      min-height: 100px;
-      text-align: left;
-      border-left: 4px solid #3498db;
     }
 
     .loading {
@@ -113,21 +90,76 @@
     .conversation-history {
       margin-top: 20px;
       text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .message-content {
+      padding: 10px 15px;
+      border-radius: 15px;
+      max-width: 70%;
+      position: relative;
     }
 
     .user-message {
-      background-color: #e6f3ff;
-      padding: 10px 15px;
-      border-radius: 10px;
-      margin-bottom: 10px;
+      justify-content: flex-end;
+    }
+
+    .user-message .message-content {
+      background-color: #4caf50; /* 緑色の吹き出し */
+      color: white;
+      margin-right: 10px;
+      border-top-right-radius: 0;
     }
 
     .ai-message {
-      background-color: #f0f8ff;
-      padding: 10px 15px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      border-left: 4px solid #3498db;
+      justify-content: flex-start;
+    }
+
+    .ai-message .message-content {
+      background-color: #f5e6d8; /* ベージュの吹き出し */
+      color: #333;
+      margin-left: 10px;
+      border-top-left-radius: 0;
+    }
+
+    .system-message {
+      justify-content: flex-start;
+    }
+
+    .system-message .message-content {
+      background-color: #e0e0e0; /* 灰色の吹き出し */
+      color: #333;
+      margin-left: 10px;
+      border-top-left-radius: 0;
+      white-space: pre-line; /* 改行を保持するための追加 */
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+    }
+
+    .user-message .avatar {
+      order: 2;
+    }
+
+    .ai-message .avatar,
+    .system-message .avatar {
+      order: 1;
     }
   </style>
 </head>
@@ -136,16 +168,12 @@
     <h1>会話ページ</h1>
     <div id="conversationHistory" class="conversation-history"></div>
     <div id="speechResult"></div>
-    <div id="aiResponse"></div>
     <button id="micButton" class="control-button">
       <i class="fas fa-microphone"></i>
     </button>
     <button id="stopButton" class="control-button">
       <i class="fas fa-phone-slash"></i>
     </button>
-    <a href="/" class="back-link">
-      <i class="fas fa-arrow-left"></i> トップページに戻る
-    </a>
   </div>
 
   <script>
@@ -166,7 +194,6 @@
       recognition.continuous = true;  // 連続的に認識
 
       const speechResult = document.getElementById('speechResult');
-      const aiResponse = document.getElementById('aiResponse');
       const micButton = document.getElementById('micButton');
       const stopButton = document.getElementById('stopButton');
       const conversationHistory = document.getElementById('conversationHistory');
@@ -221,24 +248,39 @@
 
       // 会話履歴を表示する関数
       function updateConversationHistory() {
-        // システムメッセージは表示しない
         conversationHistory.innerHTML = '';
 
         for (let i = 0; i < conversationMessages.length; i++) {
-          if (conversationMessages[i].role !== 'system') {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = conversationMessages[i].role === 'user' ? 'user-message' : 'ai-message';
-            messageDiv.innerHTML = `<strong>${conversationMessages[i].role === 'user' ? 'あなた' : 'AI医師'}:</strong> ${conversationMessages[i].content}`;
-            conversationHistory.appendChild(messageDiv);
+          const messageDiv = document.createElement('div');
+
+          if (conversationMessages[i].role === 'user') {
+            messageDiv.className = 'message user-message';
+            messageDiv.innerHTML = `
+              <div class="message-content">${conversationMessages[i].content}</div>
+              <div class="avatar"><i class="fas fa-user"></i></div>
+            `;
+          } else if (conversationMessages[i].role === 'assistant') {
+            messageDiv.className = 'message ai-message';
+            messageDiv.innerHTML = `
+              <div class="avatar"><i class="fas fa-user-md"></i></div>
+              <div class="message-content">${conversationMessages[i].content}</div>
+            `;
+          } else if (conversationMessages[i].role === 'system') {
+            messageDiv.className = 'message system-message';
+            messageDiv.innerHTML = `
+              <div class="avatar"><i class="fas fa-robot"></i></div>
+              <div class="message-content">${conversationMessages[i].content}</div>
+            `;
           }
+
+          conversationHistory.appendChild(messageDiv);
         }
       }
 
       // OpenAI APIにリクエストを送信する関数
       async function sendToOpenAI(text = '') {
         try {
-          aiResponse.style.display = 'block';
-          aiResponse.innerHTML = '<div class="loading"></div> AIが応答を生成中...';
+          speechResult.innerHTML = '<div class="loading"></div> AIが応答を生成中...';
 
           // ユーザー発言があれば会話履歴に追加
           if (text) {
@@ -276,9 +318,6 @@
           // 会話履歴を更新
           updateConversationHistory();
 
-          // AI応答を表示
-          aiResponse.innerHTML = `<strong>AI医師:</strong> ${data.response}`;
-
           // 音声認識の準備ができたことを示すためにマイクボタンを表示
           speechResult.innerHTML = '';
           finalTranscript = '';
@@ -286,7 +325,7 @@
           micButton.style.display = 'inline-block';
         } catch (error) {
           console.error('OpenAI API エラー:', error);
-          aiResponse.innerHTML = 'エラーが発生しました: ' + error.message;
+          speechResult.innerHTML = 'エラーが発生しました: ' + error.message;
           micButton.style.display = 'inline-block';
         }
       }
@@ -317,8 +356,7 @@
         if (finalTranscript.trim() !== '') {
           sendToOpenAI(finalTranscript);
         } else {
-          aiResponse.style.display = 'block';
-          aiResponse.innerHTML = '認識されたテキストがありません。もう一度試してください。';
+          speechResult.innerHTML = '認識されたテキストがありません。もう一度試してください。';
           micButton.style.display = 'inline-block';
         }
       });
